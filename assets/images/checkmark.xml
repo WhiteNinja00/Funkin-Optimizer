@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="checkmark.png">
+	<!-- Created with Adobe Animate version 23.0.1.70 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="idle selected0000" x="10" y="10" width="108" height="98"/>
+	<SubTexture name="idle selected0001" x="10" y="10" width="108" height="98"/>
+	<SubTexture name="idle selected0002" x="128" y="10" width="108" height="98"/>
+	<SubTexture name="idle selected0003" x="128" y="10" width="108" height="98"/>
+	<SubTexture name="idle unselected0000" x="10" y="118" width="90" height="93"/>
+	<SubTexture name="idle unselected0001" x="10" y="118" width="90" height="93"/>
+	<SubTexture name="idle unselected0002" x="110" y="118" width="90" height="93"/>
+	<SubTexture name="idle unselected0003" x="110" y="118" width="90" height="93"/>
+</TextureAtlas>
