@@ -40,8 +40,9 @@ class State extends FlxState {
 
 	//mouse stuff
 	var mouseobject:FlxSprite;
-	var curselected = -1;
 	var mousescroll = 0.0;
+	var curselected = -1;
+	var oldcurselected = -1;
 
 	override public function create() {
 		FlxG.cameras.bgColor = bgcolor; //set bg color
@@ -73,8 +74,8 @@ class State extends FlxState {
 			var checkmark = new FlxSprite(10);
 			checkmark.ID = i;
 			checkmark.frames = Paths.returnatlas('checkmark');
-			checkmark.animation.addByPrefix('unselected', 'idle unselected');
-			checkmark.animation.addByPrefix('selected', "idle selected", 24, false);
+			checkmark.animation.addByPrefix('unselected', 'idle unselected', 24);
+			checkmark.animation.addByPrefix('selected', "idle selected", 24);
 			checkmark.animation.play('unselected');
 			checks.add(checkmark);
 
@@ -98,7 +99,7 @@ class State extends FlxState {
 		mbsize.y -= mbsize.height;
 		add(mbsize);
 
-		mbsize2 = new FlxText(10, mbsize.y - 2, FlxG.width - 800, 'original size ' + originalsize + " mb's", fontsize);
+		mbsize2 = new FlxText(10, mbsize.y, FlxG.width - 800, 'original size ' + originalsize + " mb's", fontsize);
 		mbsize2.setFormat(Paths.returnfont('vcr.ttf'), fontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		mbsize2.borderSize = bordersize;
 		mbsize2.y -= mbsize2.height;
@@ -107,7 +108,7 @@ class State extends FlxState {
 		var coolfontsize = 18;
 		var coolbordersize = 1.5;
 
-		description = new FlxText(10, mbsize2.y - 6, FlxG.width, '', coolfontsize);
+		description = new FlxText(10, mbsize2.y - 12, FlxG.width, '', coolfontsize);
 		description.setFormat(Paths.returnfont('vcr.ttf'), coolfontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		description.borderSize = coolbordersize;
 		description.y -= description.height;
@@ -126,30 +127,23 @@ class State extends FlxState {
 			check.color = 0xFFBFBFBF;
 			if(FlxCollision.pixelPerfectCheck(mouseobject, check, 1)) {
 				check.color = 0xFFFFFFFF;
-				if(curselected != check.ID) {
-					curselected = check.ID;
-					FlxG.sound.play(Paths.returnsound('scrollMenu'));
-					description.text = options[check.ID][2];
-				}
-				var curvar = !Reflect.getProperty(Variables, options[check.ID][1]);
-				if (FlxG.mouse.justPressed) {
+				description.text = options[check.ID][2];
+				curselected = check.ID;
+				if(FlxG.mouse.justPressed) {
 					FlxG.sound.play(Paths.returnsound('confirmMenu'));
-					Reflect.setProperty(Variables, options[check.ID][1], curvar);
-					if(curvar) {
-						check.animation.play('selected');
-						check.offset.set(8.5, 1);
-					} else {
-						check.animation.play('unselected');
-						check.offset.set(0, 0);
-					}
+					Reflect.setProperty(Variables, options[check.ID][1], !Reflect.getProperty(Variables, options[check.ID][1]));
+					checkthing();
 				}
 			}
 		});
 
-		if(FlxG.mouse.wheel != 0) {
-			if(options.length > 3) {
-				mousescroll += FlxG.mouse.wheel * 50;
-			}
+		if(oldcurselected != curselected) {
+			oldcurselected = curselected;
+			FlxG.sound.play(Paths.returnsound('scrollMenu'));
+		}
+
+		if(FlxG.mouse.wheel != 0 && options.length > 3) {
+			mousescroll += FlxG.mouse.wheel * 50;
 			if(mousescroll > 0) {
 				mousescroll = 0;
 			}
@@ -158,6 +152,10 @@ class State extends FlxState {
 			}
 			checkthing();
 		}
+
+		checks.forEach(function(check:FlxSprite) {
+
+		});
 
 		super.update(elapsed);
 	}
@@ -195,6 +193,13 @@ class State extends FlxState {
 	function checkthing() {
 		checks.forEach(function(check:FlxSprite) {
 			check.y = (10 + (check.ID * 100)) + mousescroll;
+			if(Reflect.getProperty(Variables, options[check.ID][1])) {
+				check.animation.play('selected');
+				check.offset.set(8.5, 1);
+			} else {
+				check.animation.play('unselected');
+				check.offset.set(0, 0);
+			}
 		});
 		checktext.forEach(function(text:FlxSprite) {
 			text.y = ((text.ID * 50) - 605) + mousescroll;
