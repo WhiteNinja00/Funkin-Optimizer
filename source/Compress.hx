@@ -17,20 +17,16 @@ class Compress {
 
     function optimizespritesheet(text:String) {
         var image:FlxSprite;
-        var width:Int;
-        var height:Int;
-        var coolx:Int;
-        var cooly:Int;
         //using awesome magic the variables above will appear finished (tiburones please help me finish this script)
         //btw instead of opening the xml just imagine it being the "text" variable from the function
 
         var box = [0, 0, 0, 0];
         var frames; //this will break but i need a variable
         for(frame in frames) {
-            width = frame.width;
-            height = frame.height;
-            coolx = frame.x;
-            cooly = frame.y;
+            var width = frame.width;
+            var height = frame.height;
+            var coolx = frame.x;
+            var cooly = frame.y;
             if((coolx + width) > box[2]) {
                 box[2] = coolx + width;
             }
