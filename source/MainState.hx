@@ -10,11 +10,12 @@ import flixel.util.FlxCollision;
 
 using StringTools;
 
-class State extends FlxState {
+class MainState extends FlxState {
 	//options
 	//name, variable, description
 	var options:Array<Array<Dynamic>> = [
 		['Spritesheet cropping', 'shinksprsh', 'Does not affect quality and improves performance'],
+		['Minify xml', 'minxml', 'Shrinks xml files by making it 1 line (does not affect performance)'],
 		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)']
 	];
 
@@ -68,7 +69,7 @@ class State extends FlxState {
 		checktext = new FlxTypedGroup<FlxText>();
 		add(checktext);
 
-		var fontsize = 26;
+		var fontsize = 22;
 		var bordersize = 2;
 
 		for(i in 0...options.length) {
@@ -84,8 +85,9 @@ class State extends FlxState {
 
 			var text = new FlxText(110, 0, FlxG.width - 120, options[i][0], otherfontsize);
 			text.setFormat(Paths.returnfont('vcr.ttf'), otherfontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
+			text.ID = i;
 			text.borderSize = bordersize;
-			text.y -= text.height;
+			text.scrollFactor.set();
 			checktext.add(text);
 		}
 
@@ -201,8 +203,8 @@ class State extends FlxState {
 					}
 					//do somethin with da file
 				} else {
-					var directory = haxe.io.Path.addTrailingSlash(path);
-					lol();
+					var cooldirectory = haxe.io.Path.addTrailingSlash(path);
+					lol(cooldirectory);
 				}
 			}
 		}
@@ -220,7 +222,7 @@ class State extends FlxState {
 			}
 		});
 		checktext.forEach(function(text:FlxSprite) {
-			text.y = ((text.ID * 50) - 605) + mousescroll;
+			text.y = ((text.ID * 100) + 45) + mousescroll;
 		});
 	}
 
