@@ -14,7 +14,7 @@ class State extends FlxState {
 	//options
 	//name, variable, description
 	var options:Array<Array<Dynamic>> = [
-		['Shrink Spritesheets', 'shinksprsh', 'Shrinks the spritesheet and improves preformance'],
+		['Spritesheet cropping', 'shinksprsh', 'Does not affect quality and improves performance'],
 		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)']
 	];
 
@@ -28,7 +28,9 @@ class State extends FlxState {
 	var audiosize = 0.0;
 	var videosize = 0.0;
 	var luasize = 0.0;
+	var spritesheetsize = 0.0;
 	var othersize = 0.0;
+	var skippng:Array<String> = [];
 
 	//ui
 	var checks:FlxTypedGroup<FlxSprite>;
@@ -51,8 +53,7 @@ class State extends FlxState {
 		
 
 		//calculate the size
-		originalsize = (xmlsize + imagesize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;
-		originalsize = FlxMath.roundDecimal(originalsize, 2);
+		originalsize = getsize();
 
 
 		//make mouse object
@@ -79,8 +80,10 @@ class State extends FlxState {
 			checkmark.animation.play('unselected');
 			checks.add(checkmark);
 
-			var text = new FlxText(110, 0, FlxG.width - 800, options[i][0], fontsize);
-			text.setFormat(Paths.returnfont('vcr.ttf'), fontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
+			var otherfontsize = 26;
+
+			var text = new FlxText(110, 0, FlxG.width - 120, options[i][0], otherfontsize);
+			text.setFormat(Paths.returnfont('vcr.ttf'), otherfontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 			text.borderSize = bordersize;
 			text.y -= text.height;
 			checktext.add(text);
@@ -153,9 +156,9 @@ class State extends FlxState {
 			checkthing();
 		}
 
-		checks.forEach(function(check:FlxSprite) {
-
-		});
+		if(FlxG.keys.justPressed.ENTER) {
+			FlxG.switchState(new CompressState());
+		}
 
 		super.update(elapsed);
 	}
@@ -166,16 +169,31 @@ class State extends FlxState {
 				var path = haxe.io.Path.join([directory, file]);
 				if (!sys.FileSystem.isDirectory(path)) {
 					var stat:sys.FileStat = sys.FileSystem.stat(path);
+					/*
 					if(path.endsWith('.png') || path.endsWith('.jpeg')) {
-						imagesize += stat.size;
+						var skip = false;
+						for(i in 0...skippng) {
+							if(path = i) {
+								skip = true;
+							}
+						}
+						if(!skip) {
+							imagesize += stat.size;
+						}
 					} else if(path.endsWith('.json')) {
 						jsonsize += stat.size;
 					} else if(path.endsWith('.wav') || path.endsWith('.mp3') || path.endsWith('.ogg')) {
 						audiosize += stat.size;
-					} else if(path.endsWith('.xml')) {
-						xmlsize += stat.size;
 					} else if(path.endsWith('.mov') || path.endsWith('.mp4')) {
 						videosize += stat.size;
+					} */
+					//not important rn!!!!
+					if(path.endsWith('.xml')) {
+						xmlsize += stat.size;
+						path.replace('.xml', '.png');
+						stat = sys.FileSystem.stat(path);
+						skippng.push(path);
+						spritesheetsize += stat.size;
 					} else if(path.endsWith('.lua')) {
 						luasize += stat.size;
 					} else {
@@ -204,5 +222,17 @@ class State extends FlxState {
 		checktext.forEach(function(text:FlxSprite) {
 			text.y = ((text.ID * 50) - 605) + mousescroll;
 		});
+	}
+
+	function getsize(optimized = false) {
+		var coolsize = 0.0;
+		if(optimized) {
+			coolsize = (xmlsize + imagesize + spritesheetsize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;
+			coolsize = FlxMath.roundDecimal(originalsize, 2);
+		} else {
+			coolsize = (xmlsize + imagesize + spritesheetsize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;
+			coolsize = FlxMath.roundDecimal(originalsize, 2);
+		}
+		return coolsize;
 	}
 }
