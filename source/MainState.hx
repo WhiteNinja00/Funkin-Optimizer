@@ -14,6 +14,7 @@ class MainState extends FlxState {
 	//options
 	//name, variable, description
 	var options:Array<Array<Dynamic>> = [
+		['JPEG Compression', 'jpegcomp', 'Slightly affects quality but decreases size'],
 		['Spritesheet cropping', 'shinksprsh', 'Does not affect quality and improves performance'],
 		['Minify xml', 'minxml', 'Shrinks xml files by making it 1 line (does not affect performance)'],
 		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)']
