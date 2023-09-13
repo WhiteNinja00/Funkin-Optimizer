@@ -36,6 +36,7 @@ class CompressState extends FlxState {
     function loadthecompresser(timer:FlxTimer) {
         if(error) {
             text.text = Compress.execute(true);
+            error = false;
         } else {
             text.text = Compress.execute();
         }

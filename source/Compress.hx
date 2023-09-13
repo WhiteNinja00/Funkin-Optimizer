@@ -18,7 +18,7 @@ class Compress {
     public static function execute(skip:Bool = false) {
         var defaultfoldername = 'assetsoptimized'; //if you wanna change the name of the exported folder change this!! and do NOT change it to "assets"
         if(FileSystem.exists('./' + defaultfoldername + '/') && !skip) {
-            return 'errorare you sure you want to continue without deleting the "' + defaultfoldername + '" folder?\npress ENTER to continue\n press ESC to return';
+            return 'error\nare you sure you want to continue without deleting the "' + defaultfoldername + '" folder?\npress ENTER to continue\n press ESC to return';
         }
         FileSystem.createDirectory('./$defaultfoldername/');
         //checkfolders('assets/', defaultfoldername);
@@ -72,13 +72,28 @@ class Compress {
     }
 
     public static function minify(text:String) {
-        var splittext:Array<String> = text.split('\n');
-        var finalstring = '';
-        for(i in 0...splittext.length) {
-            var thing = splittext[i];
-            if(!(thing.startsWith('//') || thing.startsWith('--') || thing.startsWith('<!-- '))) {
-                finalstring += (' ' + thing).replace('	', '');
+        var splittext:Array<String> = text.toString().split('\n');
+        var cleanedtext:Array<String> = [];
+        for(word in splittext) {
+            var start = false;
+            var wordstring = '';
+            for(letter in word.split('')) {
+                if(!start) {
+                    if(letter != ' ' && letter != '	') {
+                        start = true;
+                    }
+                }
+                if(start) {
+                    wordstring += letter;
+                }
             }
+            if(!wordstring.startsWith('//') && !wordstring.startsWith('--') && !wordstring.startsWith('<!--') && wordstring != '') {
+                cleanedtext.push(wordstring);
+            }
+        }
+        var finalstring = '';
+        for(word in cleanedtext) {
+            finalstring += word;
         }
         return finalstring;
     }
