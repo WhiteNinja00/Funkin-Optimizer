@@ -22,8 +22,6 @@ class MainState extends FlxState {
 
 
 	//mb stuff
-	var optimizedsize = 0.0;
-	var originalsize = 0.0;
 	var xmlsize = 0.0;
 	var imagesize = 0.0;
 	var jsonsize = 0.0;
@@ -52,10 +50,6 @@ class MainState extends FlxState {
 		FlxG.cameras.bgColor = bgcolor; //set bg color
 
 		lol('assets/'); //load them assets!!!!
-		
-
-		//calculate the size
-		originalsize = getsize();
 
 
 		//make mouse object
@@ -99,13 +93,13 @@ class MainState extends FlxState {
 
 
 		//make text
-		mbsize = new FlxText(10, FlxG.height - 10, FlxG.width - 800, 'optimized size ' + optimizedsize + " mb's (estimation)", fontsize);
+		mbsize = new FlxText(10, FlxG.height - 10, FlxG.width - 800, '', fontsize);
 		mbsize.setFormat(Paths.returnfont('vcr.ttf'), fontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		mbsize.borderSize = bordersize;
 		mbsize.y -= mbsize.height;
 		add(mbsize);
 
-		mbsize2 = new FlxText(10, mbsize.y, FlxG.width - 800, 'original size ' + originalsize + " mb's", fontsize);
+		mbsize2 = new FlxText(10, mbsize.y, FlxG.width - 800, 'original size ' + getsize() + " mb's", fontsize);
 		mbsize2.setFormat(Paths.returnfont('vcr.ttf'), fontsize, 0xFFFFFFFF, LEFT, FlxTextBorderStyle.OUTLINE, 0xFF000000);
 		mbsize2.borderSize = bordersize;
 		mbsize2.y -= mbsize2.height;
@@ -139,6 +133,7 @@ class MainState extends FlxState {
 					FlxG.sound.play(Paths.returnsound('confirmMenu'));
 					Reflect.setProperty(Variables, options[check.ID][1], !Reflect.getProperty(Variables, options[check.ID][1]));
 					checkthing();
+					mbsize.text = 'optimized size ' + getsize(true) + " mb's (estimation)";
 				}
 			}
 		});
@@ -230,12 +225,24 @@ class MainState extends FlxState {
 	function getsize(optimized = false) {
 		var coolsize = 0.0;
 		if(optimized) {
-			coolsize = (xmlsize + imagesize + spritesheetsize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;
-			coolsize = FlxMath.roundDecimal(originalsize, 2);
+			var coollua = luasize;
+			if(Variables.minlua) {
+				coollua = percent(luasize, 86.359);
+			}
+			var coolxml = xmlsize;
+			if(Variables.minxml) {
+				coolxml = percent(luasize, 98.625);
+			}
+			coolsize = (coolxml + imagesize + spritesheetsize + jsonsize + audiosize + videosize + coollua + othersize) / 1048576;
+			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		} else {
 			coolsize = (xmlsize + imagesize + spritesheetsize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;
-			coolsize = FlxMath.roundDecimal(originalsize, 2);
+			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		}
 		return coolsize;
+	}
+
+	function percent(num:Float, percent:Float) {
+		return ((num / 100) * percent);
 	}
 }
