@@ -160,7 +160,7 @@ class MainState extends FlxState {
 		}
 
 		if(FlxG.keys.justPressed.ENTER) {
-			FlxG.switchState(new CompressState());
+			FlxG.switchState(new Compress());
 		}
 
 		super.update(elapsed);
