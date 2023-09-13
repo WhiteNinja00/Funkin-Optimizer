@@ -130,8 +130,13 @@ class MainState extends FlxState {
 				description.text = options[check.ID][2];
 				curselected = check.ID;
 				if(FlxG.mouse.justPressed) {
-					FlxG.sound.play(Paths.returnsound('confirmMenu'));
-					Reflect.setProperty(Variables, options[check.ID][1], !Reflect.getProperty(Variables, options[check.ID][1]));
+					var property = !Reflect.getProperty(Variables, options[check.ID][1]);
+					if(property) {
+						FlxG.sound.play(Paths.returnsound('confirm'));
+					} else {
+						FlxG.sound.play(Paths.returnsound('back'));
+					}
+					Reflect.setProperty(Variables, options[check.ID][1], property);
 					checkthing();
 					mbsize.text = 'optimized size ' + getsize(true) + " mb's (estimation)";
 				}
@@ -140,7 +145,7 @@ class MainState extends FlxState {
 
 		if(oldcurselected != curselected) {
 			oldcurselected = curselected;
-			FlxG.sound.play(Paths.returnsound('scrollMenu'));
+			FlxG.sound.play(Paths.returnsound('change'));
 		}
 
 		if(FlxG.mouse.wheel != 0 && options.length > 3) {
