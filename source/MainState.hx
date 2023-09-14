@@ -7,6 +7,7 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxCollision;
+import sys.FileSystem;
 
 using StringTools;
 
@@ -30,7 +31,6 @@ class MainState extends FlxState {
 	var luasize = 0.0;
 	var spritesheetsize = 0.0;
 	var othersize = 0.0;
-	var skippng:Array<String> = [];
 
 	//ui
 	var checks:FlxTypedGroup<FlxSprite>;
@@ -123,11 +123,14 @@ class MainState extends FlxState {
 		mouseobject.x = FlxG.mouse.x;
 		mouseobject.y = FlxG.mouse.y;
 
+		var nothing = true;
+
 		checks.forEach(function(check:FlxSprite) {
 			check.color = 0xFFBFBFBF;
 			if(FlxCollision.pixelPerfectCheck(mouseobject, check, 1)) {
 				check.color = 0xFFFFFFFF;
 				description.text = options[check.ID][2];
+				nothing = false;
 				curselected = check.ID;
 				if(FlxG.mouse.justPressed) {
 					var property = !Reflect.getProperty(Variables, options[check.ID][1]);
@@ -142,6 +145,10 @@ class MainState extends FlxState {
 				}
 			}
 		});
+
+		if(nothing) {
+			description.text = '';
+		}
 
 		if(oldcurselected != curselected) {
 			oldcurselected = curselected;
@@ -175,11 +182,6 @@ class MainState extends FlxState {
 					/*
 					if(path.endsWith('.png') || path.endsWith('.jpeg')) {
 						var skip = false;
-						for(i in 0...skippng) {
-							if(path = i) {
-								skip = true;
-							}
-						}
 						if(!skip) {
 							imagesize += stat.size;
 						}
@@ -191,11 +193,13 @@ class MainState extends FlxState {
 						videosize += stat.size;
 					} */
 					//not important rn!!!!
-					if(path.endsWith('.xml')) {
+					if(path.endsWith('.png')) {
+						if(!FileSystem.exists(path.replace('.png', '.xml'))) {
+							imagesize += stat.size;
+						}
+					} else if(path.endsWith('.xml')) {
 						xmlsize += stat.size;
-						path.replace('.xml', '.png');
-						stat = sys.FileSystem.stat(path);
-						skippng.push(path);
+						stat = sys.FileSystem.stat(path.replace('.xml', '.png'));
 						spritesheetsize += stat.size;
 					} else if(path.endsWith('.lua')) {
 						luasize += stat.size;
@@ -236,9 +240,17 @@ class MainState extends FlxState {
 			}
 			var coolxml = xmlsize;
 			if(Variables.minxml) {
-				coolxml = percent(luasize, 98.625);
+				coolxml = percent(xmlsize, 98.625);
 			}
-			coolsize = (coolxml + imagesize + spritesheetsize + jsonsize + audiosize + videosize + coollua + othersize) / 1048576;
+			var coolsheet = spritesheetsize;
+			if(Variables.shinksprsh) {
+				coolsheet = percent(spritesheetsize, 95.677);
+			}
+			var coolimage = imagesize;
+			if(Variables.jpegcomp) {
+				//coolimage = percent(imagesize, 95.677); //no percent rn!!!
+			}
+			coolsize = (coolxml + coolimage + coolsheet + jsonsize + audiosize + videosize + coollua + othersize) / 1048576;
 			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		} else {
 			coolsize = (xmlsize + imagesize + spritesheetsize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;

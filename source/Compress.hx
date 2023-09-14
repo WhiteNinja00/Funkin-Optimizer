@@ -7,13 +7,15 @@ import sys.FileSystem;
 import flixel.graphics.frames.FlxAtlasFrames;
 import lime.utils.Assets;
 import flixel.FlxState;
-import openfl.display.JPEGEncoderOptions;
 import openfl.display.PNGEncoderOptions;
+import openfl.display.JPEGEncoderOptions;
 import openfl.display.BitmapData;
 import openfl.utils.ByteArray;
 import haxe.io.Bytes;
 import flixel.text.FlxText;
 import flixel.util.FlxTimer;
+import flixel.util.FlxSpriteUtil;
+import openfl.geom.Rectangle;
 
 using StringTools;
 
@@ -30,13 +32,20 @@ class Compress extends FlxState {
     var error = false;
     var stopapp = false;
     var curerror:Array<Dynamic> = [];
+    var waittime = 0.1;
 
     //image
     public static var image:FlxSprite;
+    public static var image2:FlxSprite;
+    public static var image3:FlxSprite;
 
 	override public function create() {
         image = new FlxSprite();
         add(image);
+        image2 = new FlxSprite();
+        add(image2);
+        image3 = new FlxSprite();
+        add(image3);
 
         var realbg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, bgcolor);
         add(realbg);
@@ -51,7 +60,7 @@ class Compress extends FlxState {
 
 		super.create();
         
-        new FlxTimer().start(0.1, loadthecompresser, 1); //so the text can load
+        new FlxTimer().start(waittime, loadthecompresser, 1); //so the text can load
 	}
 
 	override public function update(elapsed:Float) {
@@ -64,7 +73,7 @@ class Compress extends FlxState {
                     if(FlxG.keys.justPressed.ENTER) {
                         text.text = defaulttext;
                         text.screenCenter();
-                        new FlxTimer().start(0.1, loadthecompresser, 1); //so the text can load
+                        new FlxTimer().start(waittime, loadthecompresser, 1); //so the text can load
                         compressing = true;
                     }
                 }   
@@ -146,19 +155,18 @@ class Compress extends FlxState {
                     var newpath = path.replace('assets', folder);
                     if(path.endsWith('.png')) {
                         if(Variables.jpegcomp) {
-                            image.loadGraphic(openfl.display.BitmapData.fromFile(path));
-                            savepng(image.pixels, newpath);
+                            compressImage(newpath);
                         }
                     } else if(path.endsWith('.xml')) {
                         if(Variables.shinksprsh) {
-                            savepng(cropsheet(path), newpath);
+                            cropsheet(newpath);
                         }
                         if(Variables.minxml) {
-                            sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(path)));
+                            sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));
                         }
                     } else if(path.endsWith('.lua')) {
                         if(Variables.minlua) {
-                            sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(path)));
+                            sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));
                         }
                     }
 				} else {
@@ -198,7 +206,6 @@ class Compress extends FlxState {
 
     public static function cropsheet(path:String) {
         var imagepath = path.replace('.xml', '.png');
-        image.loadGraphic(openfl.display.BitmapData.fromFile(imagepath));
         var box = [0.0, 0.0];
         for(f in FlxAtlasFrames.fromSparrow(openfl.display.BitmapData.fromFile(imagepath), sys.io.File.getContent(path)).frames) {
             if(f.frame.right > box[0]) {
@@ -208,18 +215,30 @@ class Compress extends FlxState {
                 box[1] = f.frame.bottom;
             }
         }
-        image.clipRect = new FlxRect(0, 0, box[0], box[1]);
-        image.updateHitbox();
-        return image.pixels;
+        image.loadGraphic(openfl.display.BitmapData.fromFile(imagepath), true, Math.round(box[0]), Math.round(box[1]));
+        savepng(image.pixels, imagepath, image);
     }
 
-    public static function savepng(bitdata:BitmapData, path:String) {
+    public static function compressImage(path:String) {
+        image.loadGraphic(openfl.display.BitmapData.fromFile(path));
+        savepng(image.pixels, path);
+    }
+
+    public static function savepng(bitdata:BitmapData, path:String, ?image:FlxSprite = null) {
         var byteArray:ByteArray = new ByteArray();
         if(Variables.jpegcomp) {
-            bitdata.encode(bitdata.rect, new JPEGEncoderOptions(), byteArray);
+            image.pixels = bitdata;
+            image.antialiasing = true;
+            image2.pixels = BitmapData.fromBytes(bitdata.encode(bitdata.rect, new JPEGEncoderOptions(75)));
+            image2.antialiasing = true;
+            FlxSpriteUtil.alphaMaskFlxSprite(image2, image, image3);
+            image3.pixels.encode(new Rectangle(0, 0, image.width, image.height), new PNGEncoderOptions(false), byteArray);
         } else {
-            bitdata.encode(bitdata.rect, new PNGEncoderOptions(), byteArray);
+            trace(image);
+            bitdata.encode(new Rectangle(0, 0, image.width, image.height), new PNGEncoderOptions(false), byteArray);
         }
+        byteArray.compress();
+        byteArray.uncompress();
         sys.io.File.saveBytes(path, Bytes.ofData(byteArray));
     }
 }
