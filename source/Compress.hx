@@ -168,7 +168,7 @@ class Compress extends FlxState {
                         if(Variables.minlua) {
                             sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));
                         }
-                    } else if(path.endsWith('.lua')) {
+                    } else if(path.endsWith('.json')) {
                         if(path.contains('data')) {
 							if(Variables.minchart) {
                                 sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));
@@ -203,7 +203,7 @@ class Compress extends FlxState {
             var wordstring = '';
             for(letter in word.split('')) {
                 if(!start) {
-                    if(letter != ' ' && letter != '	') {
+                    if(letter != ' ' && letter != '	' && letter != '\t') {
                         start = true;
                     }
                 }
