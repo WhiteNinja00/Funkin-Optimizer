@@ -1,0 +1,32 @@
+  ______           _    _       _    ____        _   _           _              
+ |  ____|         | |  (_)     ( )  / __ \      | | (_)         (_)             
+ | |__ _   _ _ __ | | ___ _ __ |/  | |  | |_ __ | |_ _ _ __ ___  _ _______ _ __ 
+ |  __| | | | '_ \| |/ / | '_ \    | |  | | '_ \| __| | '_ ` _ \| |_  / _ \ '__|
+ | |  | |_| | | | |   <| | | | |   | |__| | |_) | |_| | | | | | | |/ /  __/ |   
+ |_|   \__,_|_| |_|_|\_\_|_| |_|    \____/| .__/ \__|_|_| |_| |_|_/___\___|_|   
+                                          | |                                   
+                                          |_|                                   
+
+--------------------------------------
+
+how do i use this thing?
+to use this you need to drag the exe and lime.ndll from the rar file onto an fnf mod
+but before you drag it you need to rename the lime.ndll file to anything so you dont lose it!
+
+how do i use the menu?
+the menu for funkin' optimizer uses the mouse instead of the keyboard
+scroll and click the options you want to select
+
+how do i export?
+to export press enter
+
+what do i do if i encounter an error?
+if you dont understand the error you recieved
+go to this link https://github.com/WhiteNinja00/Funkin-Optimizer/issues
+and check if there was someone before you that had the same error
+if not click on new issue and explain the error
+
+whats up with windows protection flagging this?
+windows protection thinks this is a virus because of the commands it uses
+but the commands are only used for copying a folder and nothing else
+if windows protection deletes the funkin' optimizer open the notification and click on "allow on device" or outright disable it for the period that you are using it

@@ -16,7 +16,7 @@ class MainState extends FlxState {
 	//name, variable, description
 	var options:Array<Array<Dynamic>> = [
 		//['JPEG Compression', 'jpegcomp', 'Slightly affects quality but decreases size'], // this shi take too long to code, gonna delay to other versions
-		['Spritesheet cropping', 'shinksprsh', 'Does not affect quality and improves performance'],
+		['Spritesheet cropping', 'shinksprsh', 'Does not affect quality and improves performance (may increse file size)'],
 		['Minify Xmls', 'minxml', 'Shrinks xml files by making it 1 line (does not affect performance)'],
 		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)'],
 		['Minify Charts', 'minchart', 'Shrinks Charts by making it 1 line (does not affect performance)'],
@@ -261,7 +261,7 @@ class MainState extends FlxState {
 			}
 			var coolsheet = spritesheetsize;
 			if(Variables.shinksprsh) {
-				coolsheet = percent(spritesheetsize, 95.677);
+				coolsheet = percent(spritesheetsize, 101.258);
 			}
 			var coolimage = imagesize + coolsheet;
 			if(Variables.jpegcomp) {

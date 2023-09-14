@@ -33,6 +33,8 @@
 	<source path="source" />
 	<assets path="assets" embed='true'/>
 
+	<assets path='art/Read Me.txt' rename='Read Me.txt' />
+
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="flixel" />]
