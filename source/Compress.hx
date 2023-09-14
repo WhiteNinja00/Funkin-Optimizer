@@ -152,13 +152,13 @@ class Compress extends FlxState {
 			for (file in sys.FileSystem.readDirectory(directory)) {
 				var path = haxe.io.Path.join([directory, file]);
 				if (!sys.FileSystem.isDirectory(path)) {
-                    var newpath = path.replace('assets', folder);
+                    var newpath = path.replace('assets/', folder + '/');
                     if(path.endsWith('.png')) {
                         if(Variables.jpegcomp) {
                             compressImage(newpath);
                         }
                     } else if(path.endsWith('.xml')) {
-                        if(Variables.shinksprsh) {
+                        if(FileSystem.exists(path.replace('.xml', '.png')) && Variables.shinksprsh) {
                             cropsheet(newpath);
                         }
                         if(Variables.minxml) {
@@ -248,7 +248,6 @@ class Compress extends FlxState {
             FlxSpriteUtil.alphaMaskFlxSprite(image2, image, image3);
             image3.pixels.encode(new Rectangle(0, 0, image.width, image.height), new PNGEncoderOptions(false), byteArray);
         } else {
-            trace(image);
             bitdata.encode(new Rectangle(0, 0, image.width, image.height), new PNGEncoderOptions(false), byteArray);
         }
         byteArray.compress();
