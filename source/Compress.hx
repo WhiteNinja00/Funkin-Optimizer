@@ -177,10 +177,6 @@ class Compress extends FlxState {
 							if(Variables.minchar) {
                                 sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));
                             }
-						} else if(path.contains('stages')) {
-							if(Variables.minstage) {
-                                sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));
-                            }
 						} else if(path.contains('weeks')) {
 							if(Variables.minweek) {
                                 sys.io.File.saveContent(newpath, minify(sys.io.File.getContent(newpath)));

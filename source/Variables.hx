@@ -6,7 +6,6 @@ class Variables {
     public static var minxml = false;
     public static var jpegcomp = false;
     public static var minchart = false;
-    public static var minstage = false;
     public static var minchar = false;
     public static var minweek = false;
 }

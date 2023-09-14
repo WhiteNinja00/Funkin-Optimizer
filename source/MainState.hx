@@ -20,7 +20,6 @@ class MainState extends FlxState {
 		['Minify Xmls', 'minxml', 'Shrinks xml files by making it 1 line (does not affect performance)'],
 		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)'],
 		['Minify Charts', 'minchart', 'Shrinks Charts by making it 1 line (does not affect performance)'],
-		['Minify Stage Json', 'minstage', 'Shrinks Stage json by making it 1 line (does not affect performance)'],
 		['Minify Character Json', 'minchar', 'Shrinks Character json by making it 1 line (does not affect performance)'],
 		['Minify Week Jsons', 'minweek', 'Shrinks Week json files by making it 1 line (does not affect performance)']
 	];
@@ -270,25 +269,21 @@ class MainState extends FlxState {
 			}
 			var coolchart = chartsize;
 			if(Variables.minchart) {
-				coolchart = percent(chartsize, 100);
+				coolchart = percent(chartsize, 59.079);
 			}
 			var coolchar = charsize;
 			if(Variables.minchar) {
-				coolchar = percent(charsize, 100);
-			}
-			var coolstage = stagesize;
-			if(Variables.minstage) {
-				coolstage = percent(stagesize, 100);
+				coolchar = percent(charsize, 73.486);
 			}
 			var coolweek = weeksize;
 			if(Variables.minweek) {
-				coolweek = percent(weeksize, 100);
+				coolweek = percent(weeksize, 85.267);
 			}
-			var cooljson = coolchart + coolchar + coolstage + coolweek;
+			var cooljson = coolchart + coolchar + coolweek;
 			coolsize = (coolxml + coolimage + cooljson + audiosize + videosize + coollua + othersize) / 1048576;
 			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		} else {
-			coolsize = (xmlsize + imagesize + spritesheetsize + chartsize + charsize + stagesize + weeksize + audiosize + videosize + luasize + othersize) / 1048576;
+			coolsize = (xmlsize + imagesize + spritesheetsize + chartsize + charsize + weeksize + audiosize + videosize + luasize + othersize) / 1048576;
 			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		}
 		return coolsize;
