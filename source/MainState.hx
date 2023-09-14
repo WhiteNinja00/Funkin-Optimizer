@@ -15,17 +15,24 @@ class MainState extends FlxState {
 	//options
 	//name, variable, description
 	var options:Array<Array<Dynamic>> = [
-		['JPEG Compression', 'jpegcomp', 'Slightly affects quality but decreases size'],
+		//['JPEG Compression', 'jpegcomp', 'Slightly affects quality but decreases size'], // this shi take too long to code, gonna delay to other versions
 		['Spritesheet cropping', 'shinksprsh', 'Does not affect quality and improves performance'],
-		['Minify xml', 'minxml', 'Shrinks xml files by making it 1 line (does not affect performance)'],
-		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)']
+		['Minify Xmls', 'minxml', 'Shrinks xml files by making it 1 line (does not affect performance)'],
+		['Minify luas', 'minlua', 'Shrinks lua files by making it 1 line (does not affect performance)'],
+		['Minify Charts', 'minchart', 'Shrinks Charts by making it 1 line (does not affect performance)'],
+		['Minify Stage Json', 'minstage', 'Shrinks Stage json by making it 1 line (does not affect performance)'],
+		['Minify Character Json', 'minchar', 'Shrinks Character json by making it 1 line (does not affect performance)'],
+		['Minify Week Jsons', 'minweek', 'Shrinks Week json files by making it 1 line (does not affect performance)']
 	];
 
 
 	//mb stuff
 	var xmlsize = 0.0;
 	var imagesize = 0.0;
-	var jsonsize = 0.0;
+	var chartsize = 0.0;
+	var stagesize = 0.0;
+	var charsize = 0.0;
+	var weeksize = 0.0;
 	var audiosize = 0.0;
 	var videosize = 0.0;
 	var luasize = 0.0;
@@ -160,8 +167,9 @@ class MainState extends FlxState {
 			if(mousescroll > 0) {
 				mousescroll = 0;
 			}
-			if(mousescroll < (-85 * (options.length - 3))) {
-				mousescroll = -85 * (options.length - 3);
+			var maxscroll = -87.5 * (options.length - 3);
+			if(mousescroll < maxscroll) { 
+				mousescroll = maxscroll;
 			}
 			checkthing();
 		}
@@ -203,6 +211,16 @@ class MainState extends FlxState {
 						spritesheetsize += stat.size;
 					} else if(path.endsWith('.lua')) {
 						luasize += stat.size;
+					} else if(path.endsWith('.json')) {
+						if(path.contains('data')) {
+							chartsize += stat.size;
+						} else if(path.contains('characters')) {
+							charsize += stat.size;
+						} else if(path.contains('stages')) {
+							stagesize += stat.size;
+						} else if(path.contains('weeks')) {
+							weeksize += stat.size;
+						}
 					} else {
 						othersize += stat.size;
 					}
@@ -246,14 +264,31 @@ class MainState extends FlxState {
 			if(Variables.shinksprsh) {
 				coolsheet = percent(spritesheetsize, 95.677);
 			}
-			var coolimage = imagesize;
+			var coolimage = imagesize + coolsheet;
 			if(Variables.jpegcomp) {
-				//coolimage = percent(imagesize, 95.677); //no percent rn!!!
+				coolimage = percent(coolimage, 100);
 			}
-			coolsize = (coolxml + coolimage + coolsheet + jsonsize + audiosize + videosize + coollua + othersize) / 1048576;
+			var coolchart = chartsize;
+			if(Variables.minchart) {
+				coolchart = percent(chartsize, 100);
+			}
+			var coolchar = charsize;
+			if(Variables.minchar) {
+				coolchar = percent(charsize, 100);
+			}
+			var coolstage = stagesize;
+			if(Variables.minstage) {
+				coolstage = percent(stagesize, 100);
+			}
+			var coolweek = weeksize;
+			if(Variables.minweek) {
+				coolweek = percent(weeksize, 100);
+			}
+			var cooljson = coolchart + coolchar + coolstage + coolweek;
+			coolsize = (coolxml + coolimage + cooljson + audiosize + videosize + coollua + othersize) / 1048576;
 			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		} else {
-			coolsize = (xmlsize + imagesize + spritesheetsize + jsonsize + audiosize + videosize + luasize + othersize) / 1048576;
+			coolsize = (xmlsize + imagesize + spritesheetsize + chartsize + charsize + stagesize + weeksize + audiosize + videosize + luasize + othersize) / 1048576;
 			coolsize = FlxMath.roundDecimal(coolsize, 2);
 		}
 		return coolsize;
