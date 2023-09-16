@@ -92,11 +92,9 @@ class MainState extends FlxState {
 			checktext.add(text);
 		}
 
-		var gradient:FlxSprite = new FlxSprite(0, FlxG.height).loadGraphic(Paths.returnimage('gradient'));
-		gradient.y -= gradient.height;
-		gradient.color = bgcolor;
+		var gradient:FlxSprite = flixel.util.FlxGradient.createGradientFlxSprite(FlxG.width, 148, [0x00757575, bgcolor, bgcolor, bgcolor]);
+		gradient.y = FlxG.height - gradient.height;
 		add(gradient);
-
 
 		//make text
 		mbsize = new FlxText(10, FlxG.height - 10, FlxG.width - 800, '', fontsize);
